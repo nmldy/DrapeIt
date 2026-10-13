@@ -1,0 +1,29 @@
+name: Build DrapeIt APK
+
+on:
+  workflow_dispatch: # 允许你在网页上手动点击触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x android/gradlew
+
+      - name: Build with Gradle (Debug版本，确保能直接安装)
+        run: cd android && ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DrapeIt-APK
+          path: android/app/build/outputs/apk/debug/*.apk
